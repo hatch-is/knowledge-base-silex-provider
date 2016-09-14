@@ -79,16 +79,26 @@ class Processor
     }
 
     /**
+     * @param string $q
+     *
      * @return mixed
      * @throws \Exception
      */
-    public function read()
+    public function read($q = "")
     {
         $client = new GuzzleClient();
-        $request = new Request(
-            'get',
-            $this->getPath('/knowledge/articles')
-        );
+        if ($q != "") {
+            $query = ['q' => json_encode($q)];
+            $request = new Request(
+                'get',
+                $this->getPath(sprintf('/knowledge/articles?q=%s', $query))
+            );
+        } else {
+            $request = new Request(
+                'get',
+                $this->getPath('/knowledge/articles')
+            );
+        }
         $response = $this->send($client, $request);
         return json_decode($response->getContents());
     }
