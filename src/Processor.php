@@ -88,11 +88,11 @@ class Processor
     {
         $client = new GuzzleClient();
         if (!empty($q)) {
-            $query = ['q' => json_encode($q)];
+            $query = ['q' => $q];
             $query = http_build_query($query);
             $request = new Request(
                 'get',
-                $this->getPath(sprintf('/knowledge/articles?q=%s', $query))
+                $this->getPath(sprintf('/knowledge/articles?%s', $query))
             );
         } else {
             $request = new Request(
@@ -115,7 +115,7 @@ class Processor
         $client = new GuzzleClient();
         $request = new Request(
             'get',
-            $this->getPath(sprintf('knowledge/articles/%s', $articleId))
+            $this->getPath(sprintf('/knowledge/articles/%s', $articleId))
         );
 
         $response = $this->send($client, $request);
