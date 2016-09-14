@@ -87,7 +87,7 @@ class Processor
     public function read($q = "")
     {
         $client = new GuzzleClient();
-        if ($q != "") {
+        if (!empty($q)) {
             $query = ['q' => json_encode($q)];
             $query = http_build_query($query);
             $request = new Request(

@@ -3,14 +3,14 @@
 namespace KnowledgeBaseMcs;
 
 use Silex\Application;
-use Silex\ServiceProviderInreface;
+use Silex\ServiceProviderInterface;
 
 /**
  * Class KnowledgeBaseSilexProvider
  *
  * @package KnowledgeBaseMcs
  */
-class KnowledgeBaseSilexProvider implements ServiceProviderInreface
+class KnowledgeBaseSilexProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
