@@ -89,6 +89,7 @@ class Processor
         $client = new GuzzleClient();
         if ($q != "") {
             $query = ['q' => json_encode($q)];
+            $query = http_build_query($query);
             $request = new Request(
                 'get',
                 $this->getPath(sprintf('/knowledge/articles?q=%s', $query))
