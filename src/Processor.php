@@ -79,20 +79,20 @@ class Processor
     }
 
     /**
-     * @param string $q
+     * @param array $filter
      *
      * @return mixed
      * @throws \Exception
      */
-    public function read($q = "")
+    public function read($filter = [])
     {
         $client = new GuzzleClient();
-        if (!empty($q)) {
-            $query = ['q' => $q];
+        if (!empty($filter)) {
+            $query = ['filter' => json_encode($filter)];
             $query = http_build_query($query);
             $request = new Request(
                 'get',
-                $this->getPath(sprintf('/knowledge/articles?%s', $query))
+                $this->getPath(sprintf('/knowledge/articles?filter=%s', $query))
             );
         } else {
             $request = new Request(
