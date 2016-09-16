@@ -92,7 +92,7 @@ class Processor
             $query = http_build_query($query);
             $request = new Request(
                 'get',
-                $this->getPath(sprintf('/knowledge/articles?filter=%s', $query))
+                $this->getPath(sprintf('/knowledge/articles?%s', $query))
             );
         } else {
             $request = new Request(
