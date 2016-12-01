@@ -47,7 +47,11 @@ class Processor
     {
         try {
             $response = $client->send($request);
-            return $response->getBody();
+            return [
+                'body' => json_decode($response->getBody()),
+                'headers' => $response->getHeaders(),
+                'statusCode' => $response->getStatusCode()
+            ];
         } catch (GuzzleClientException $e) {
             $message = $this->formatErrorMessage($e);
             throw new \Exception(json_encode($message), 0, $e);
@@ -101,7 +105,7 @@ class Processor
             );
         }
         $response = $this->send($client, $request);
-        return json_decode($response->getContents());
+        return $response;
     }
 
     /**
@@ -119,7 +123,7 @@ class Processor
         );
 
         $response = $this->send($client, $request);
-        return json_decode($response->getContents());
+        return $response;
     }
 
     /**
@@ -138,7 +142,7 @@ class Processor
             json_encode($data)
         );
         $response = $this->send($client, $request);
-        return json_decode($response->getContents());
+        return $response;
     }
 
     /**
@@ -158,7 +162,7 @@ class Processor
             json_encode($data)
         );
         $response = $this->send($client, $request);
-        return json_decode($response->getContents());
+        return $response;
     }
 
     /**
@@ -176,7 +180,7 @@ class Processor
             ['content-type' => 'application/json']
         );
         $response = $this->send($client, $request);
-        return json_decode($response->getContents());
+        return $response;
     }
 
     /**
@@ -191,6 +195,6 @@ class Processor
             $this->getPath('/knowledge/tags')
         );
         $response = $this->send($client, $request);
-        return json_decode($response->getContents());
+        return $response;
     }
 }
