@@ -47,11 +47,20 @@ class Processor
     {
         try {
             $response = $client->send($request);
-            return [
-                'body' => json_decode($response->getBody()),
-                'headers' => $response->getHeaders(),
+            $data = [
+                'body'       => json_decode($response->getBody()),
+                'headers'    => [],
                 'statusCode' => $response->getStatusCode()
             ];
+
+            if (!empty($total = $response->getHeader('X-Total-Count'))) {
+                $data['headers']['X-Total-Count'] = $total;
+            }
+            if (!empty($rate = $response->getHeader('X-Ratelimit-Remaining'))) {
+                $data['headers']['X-Ratelimit-Remaining'] = $rate;
+            }
+
+            return $data;
         } catch (GuzzleClientException $e) {
             $message = $this->formatErrorMessage($e);
             throw new \Exception(json_encode($message), 0, $e);
