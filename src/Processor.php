@@ -97,7 +97,7 @@ class Processor
      * @return mixed
      * @throws \Exception
      */
-    public function read($filter = [])
+    public function read($filter = [], $locationGroup)
     {
         $client = new GuzzleClient();
         if (!empty($filter)) {
@@ -105,12 +105,19 @@ class Processor
             $query = http_build_query($query);
             $request = new Request(
                 'get',
-                $this->getPath(sprintf('/knowledge/articles?%s', $query))
+                $this->getPath(sprintf('/knowledge/articles?%s', $query)),
+                [
+                    'x-location-group' => $locationGroup
+                ]
             );
         } else {
             $request = new Request(
                 'get',
                 $this->getPath('/knowledge/articles')
+                ,
+                [
+                    'x-location-group' => $locationGroup
+                ]
             );
         }
         $response = $this->send($client, $request);
@@ -123,12 +130,15 @@ class Processor
      * @return mixed
      * @throws \Exception
      */
-    public function readOne($articleId)
+    public function readOne($articleId, $locationGroup)
     {
         $client = new GuzzleClient();
         $request = new Request(
             'get',
-            $this->getPath(sprintf('/knowledge/articles/%s', $articleId))
+            $this->getPath(sprintf('/knowledge/articles/%s', $articleId)),
+            [
+                'x-location-group' => $locationGroup
+            ]
         );
 
         $response = $this->send($client, $request);
@@ -141,7 +151,7 @@ class Processor
      * @return mixed
      * @throws \Exception
      */
-    public function create($data)
+    public function create($data, $locationGroup)
     {
         $client = new GuzzleClient();
         $request = new Request(
@@ -161,7 +171,7 @@ class Processor
      * @return mixed
      * @throws \Exception
      */
-    public function update($articleId, $data)
+    public function update($articleId, $data, $locationGroup)
     {
         $client = new GuzzleClient();
         $request = new Request(
@@ -180,7 +190,7 @@ class Processor
      * @return mixed
      * @throws \Exception
      */
-    public function delete($articleId)
+    public function delete($articleId, $locationGroup)
     {
         $client = new GuzzleClient();
         $request = new Request(
