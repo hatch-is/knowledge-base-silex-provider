@@ -75,16 +75,16 @@ class Processor
     public function formatErrorMessage($httpException)
     {
         $message = [
-            'message' => 'Something bad happened with Knowledge Base service',
-            'request' => [
+            'message'  => 'Something bad happened with Knowledge Base service',
+            'request'  => [
                 'headers' => $httpException->getRequest()->getHeaders(),
-                'body' => $httpException->getRequest()->getBody()
+                'body'    => $httpException->getRequest()->getBody()
             ],
             'response' => [
                 'headers' => $httpException->getResponse()->getHeaders(),
-                'body' => $httpException->getResponse()->getBody()->getContents(
-                ),
-                'status' => $httpException->getResponse()->getStatusCode()
+                'body'    => $httpException->getResponse()->getBody()
+                    ->getContents(),
+                'status'  => $httpException->getResponse()->getStatusCode()
             ]
         ];
 
@@ -92,12 +92,13 @@ class Processor
     }
 
     /**
-     * @param array $filter
+     * @param array  $filter
+     * @param string $locationGroup
      *
      * @return mixed
      * @throws \Exception
      */
-    public function read($filter = [])
+    public function read($filter = [], $locationGroup)
     {
         $client = new GuzzleClient();
         if (!empty($filter)) {
@@ -105,12 +106,21 @@ class Processor
             $query = http_build_query($query);
             $request = new Request(
                 'get',
-                $this->getPath(sprintf('/knowledge/articles?%s', $query))
+                $this->getPath(sprintf('/knowledge/articles?%s', $query)),
+                [
+                    'content-type'     => 'application/json',
+                    'x-location-group' => $locationGroup
+                ]
             );
         } else {
             $request = new Request(
                 'get',
                 $this->getPath('/knowledge/articles')
+                ,
+                [
+                    'content-type'     => 'application/json',
+                    'x-location-group' => $locationGroup
+                ]
             );
         }
         $response = $this->send($client, $request);
@@ -119,16 +129,21 @@ class Processor
 
     /**
      * @param string $articleId
+     * @param string $locationGroup
      *
      * @return mixed
      * @throws \Exception
      */
-    public function readOne($articleId)
+    public function readOne($articleId, $locationGroup)
     {
         $client = new GuzzleClient();
         $request = new Request(
             'get',
-            $this->getPath(sprintf('/knowledge/articles/%s', $articleId))
+            $this->getPath(sprintf('/knowledge/articles/%s', $articleId)),
+            [
+                'content-type'     => 'application/json',
+                'x-location-group' => $locationGroup
+            ]
         );
 
         $response = $this->send($client, $request);
@@ -136,18 +151,22 @@ class Processor
     }
 
     /**
-     * @param array $data
+     * @param array  $data
+     * @param string $locationGroup
      *
      * @return mixed
      * @throws \Exception
      */
-    public function create($data)
+    public function create($data, $locationGroup)
     {
         $client = new GuzzleClient();
         $request = new Request(
             'post',
             $this->getPath('/knowledge/articles'),
-            ['content-type' => 'application/json'],
+            [
+                'content-type'     => 'application/json',
+                'x-location-group' => $locationGroup
+            ],
             json_encode($data)
         );
         $response = $this->send($client, $request);
@@ -156,18 +175,22 @@ class Processor
 
     /**
      * @param string $articleId
-     * @param array $data
+     * @param array  $data
+     * @param string $locationGroup
      *
      * @return mixed
      * @throws \Exception
      */
-    public function update($articleId, $data)
+    public function update($articleId, $data, $locationGroup)
     {
         $client = new GuzzleClient();
         $request = new Request(
             'put',
             $this->getPath(sprintf('/knowledge/articles/%s', $articleId)),
-            ['content-type' => 'application/json'],
+            [
+                'content-type'     => 'application/json',
+                'x-location-group' => $locationGroup
+            ],
             json_encode($data)
         );
         $response = $this->send($client, $request);
@@ -176,32 +199,42 @@ class Processor
 
     /**
      * @param string $articleId
+     * @param string $locationGroup
      *
      * @return mixed
      * @throws \Exception
      */
-    public function delete($articleId)
+    public function delete($articleId, $locationGroup)
     {
         $client = new GuzzleClient();
         $request = new Request(
             'delete',
             $this->getPath(sprintf('/knowledge/articles/%s', $articleId)),
-            ['content-type' => 'application/json']
+            [
+                'content-type'     => 'application/json',
+                'x-location-group' => $locationGroup
+            ]
         );
         $response = $this->send($client, $request);
         return $response;
     }
 
     /**
+     * @param string $locationGroup
+     *
      * @return mixed
      * @throws \Exception
      */
-    public function tags()
+    public function tags($locationGroup)
     {
         $client = new GuzzleClient();
         $request = new Request(
             'get',
-            $this->getPath('/knowledge/tags')
+            $this->getPath('/knowledge/tags'),
+            [
+                'content-type'     => 'application/json',
+                'x-location-group' => $locationGroup
+            ]
         );
         $response = $this->send($client, $request);
         return $response;
