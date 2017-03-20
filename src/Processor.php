@@ -75,16 +75,16 @@ class Processor
     public function formatErrorMessage($httpException)
     {
         $message = [
-            'message' => 'Something bad happened with Knowledge Base service',
-            'request' => [
+            'message'  => 'Something bad happened with Knowledge Base service',
+            'request'  => [
                 'headers' => $httpException->getRequest()->getHeaders(),
-                'body' => $httpException->getRequest()->getBody()
+                'body'    => $httpException->getRequest()->getBody()
             ],
             'response' => [
                 'headers' => $httpException->getResponse()->getHeaders(),
-                'body' => $httpException->getResponse()->getBody()->getContents(
-                ),
-                'status' => $httpException->getResponse()->getStatusCode()
+                'body'    => $httpException->getResponse()->getBody()
+                    ->getContents(),
+                'status'  => $httpException->getResponse()->getStatusCode()
             ]
         ];
 
@@ -92,7 +92,8 @@ class Processor
     }
 
     /**
-     * @param array $filter
+     * @param array  $filter
+     * @param string $locationGroup
      *
      * @return mixed
      * @throws \Exception
@@ -107,6 +108,7 @@ class Processor
                 'get',
                 $this->getPath(sprintf('/knowledge/articles?%s', $query)),
                 [
+                    'content-type'     => 'application/json',
                     'x-location-group' => $locationGroup
                 ]
             );
@@ -116,6 +118,7 @@ class Processor
                 $this->getPath('/knowledge/articles')
                 ,
                 [
+                    'content-type'     => 'application/json',
                     'x-location-group' => $locationGroup
                 ]
             );
@@ -126,6 +129,7 @@ class Processor
 
     /**
      * @param string $articleId
+     * @param string $locationGroup
      *
      * @return mixed
      * @throws \Exception
@@ -137,6 +141,7 @@ class Processor
             'get',
             $this->getPath(sprintf('/knowledge/articles/%s', $articleId)),
             [
+                'content-type'     => 'application/json',
                 'x-location-group' => $locationGroup
             ]
         );
@@ -146,7 +151,8 @@ class Processor
     }
 
     /**
-     * @param array $data
+     * @param array  $data
+     * @param string $locationGroup
      *
      * @return mixed
      * @throws \Exception
@@ -157,7 +163,10 @@ class Processor
         $request = new Request(
             'post',
             $this->getPath('/knowledge/articles'),
-            ['content-type' => 'application/json'],
+            [
+                'content-type'     => 'application/json',
+                'x-location-group' => $locationGroup
+            ],
             json_encode($data)
         );
         $response = $this->send($client, $request);
@@ -166,7 +175,8 @@ class Processor
 
     /**
      * @param string $articleId
-     * @param array $data
+     * @param array  $data
+     * @param string $locationGroup
      *
      * @return mixed
      * @throws \Exception
@@ -177,7 +187,10 @@ class Processor
         $request = new Request(
             'put',
             $this->getPath(sprintf('/knowledge/articles/%s', $articleId)),
-            ['content-type' => 'application/json'],
+            [
+                'content-type'     => 'application/json',
+                'x-location-group' => $locationGroup
+            ],
             json_encode($data)
         );
         $response = $this->send($client, $request);
@@ -186,6 +199,7 @@ class Processor
 
     /**
      * @param string $articleId
+     * @param string $locationGroup
      *
      * @return mixed
      * @throws \Exception
@@ -196,22 +210,31 @@ class Processor
         $request = new Request(
             'delete',
             $this->getPath(sprintf('/knowledge/articles/%s', $articleId)),
-            ['content-type' => 'application/json']
+            [
+                'content-type'     => 'application/json',
+                'x-location-group' => $locationGroup
+            ]
         );
         $response = $this->send($client, $request);
         return $response;
     }
 
     /**
+     * @param string $locationGroup
+     *
      * @return mixed
      * @throws \Exception
      */
-    public function tags()
+    public function tags($locationGroup)
     {
         $client = new GuzzleClient();
         $request = new Request(
             'get',
-            $this->getPath('/knowledge/tags')
+            $this->getPath('/knowledge/tags'),
+            [
+                'content-type'     => 'application/json',
+                'x-location-group' => $locationGroup
+            ]
         );
         $response = $this->send($client, $request);
         return $response;
